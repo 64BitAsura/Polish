@@ -13,6 +13,13 @@
 
   const QUIZ_LENGTH = 10;
 
+  /* ── Sanitization ──────────────────────────────────────────── */
+  function escapeHTML(str) {
+    const div = document.createElement("div");
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+  }
+
   /* ── DOM helpers ───────────────────────────────────────────── */
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => [...document.querySelectorAll(sel)];
@@ -145,6 +152,7 @@
     const examples = NOUNS.map((n) => ({
       word: n.word,
       english: n.english,
+      genderClass: n.gender,
       gender: n.genderLabel,
       nominative: n.forms[0],
       form: n.forms[idx],
@@ -207,7 +215,7 @@
                     (ex) => `
                   <tr>
                     <td><strong>${ex.nominative}</strong> <span class="en">(${ex.english})</span></td>
-                    <td><span class="gender-badge ${ex.gender.split(" ")[0]}">${ex.gender}</span></td>
+                    <td><span class="gender-badge ${ex.genderClass}">${ex.gender}</span></td>
                     <td class="form-highlight">${ex.form}</td>
                     <td class="sentence">${ex.sentence}</td>
                   </tr>
@@ -289,8 +297,7 @@
 
     $$(".case-quiz-btn").forEach((el) =>
       el.addEventListener("click", () => {
-        const cases = el.dataset.cases.split(",").map(Number);
-        startQuiz(cases);
+        startQuiz([Number(el.dataset.cases)]);
       })
     );
 
@@ -447,7 +454,7 @@
       feedbackEl.innerHTML = `
         <div class="feedback-wrong">
           ❌ Not quite. The correct answer is: <strong>${question.correctAnswer}</strong>
-          <p>You answered: <em>${userAnswer}</em></p>
+          <p>You answered: <em>${escapeHTML(userAnswer)}</em></p>
           <p class="feedback-sentence">${question.sentence}</p>
         </div>
       `;
@@ -553,7 +560,7 @@
                     ${
                       a.correct
                         ? `✅ <strong>${a.question.correctAnswer}</strong>`
-                        : `❌ Your answer: <em>${a.userAnswer}</em> → Correct: <strong>${a.question.correctAnswer}</strong>`
+                        : `❌ Your answer: <em>${escapeHTML(a.userAnswer)}</em> → Correct: <strong>${a.question.correctAnswer}</strong>`
                     }
                   </div>
                   <div class="answer-sentence">${a.question.sentence}</div>

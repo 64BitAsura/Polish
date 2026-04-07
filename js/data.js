@@ -156,7 +156,7 @@ const CASES = [
       "Exclamations (Boże! — Oh God!)",
     ],
     rules: {
-      masculine: "-e or -u (kot → kocie, student → studencie, pan → panie)",
+      masculine: "-e after hard consonants (kot → kocie, student → studencie); -u after soft/k/g (pan → panie)",
       feminine: "-a → -o (kobieta → kobieto); -i: no change (pani → pani)",
       neuter: "Same as nominative (rarely used)",
     },
